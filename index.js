@@ -43,6 +43,8 @@ function newMessage() {
 	$(".messages").animate({ scrollTop: $(document).height() }, "fast");
 
 
+	AWS.config.credentials.refreshPromise().then(
+		function(){
 		var apigClient = apigClientFactory.newClient({
 				accessKey: AWS.config.credentials.accessKeyId,
 				secretKey: AWS.config.credentials.secretAccessKey,
@@ -72,7 +74,14 @@ function newMessage() {
 						$(".messages").animate({ scrollTop: $(document).height() }, "fast");
 				}).catch( function(result){
 						console.log(result);
-				});    
+				}); 
+		},
+		function(err){
+			console.log("refresh fails!");
+		}
+				
+		)
+
 		return false;    
 		}
 
@@ -92,30 +101,41 @@ $(window).on('keydown', function(e) {
 $(document).ready(function(){
 	let id_token;
 	$.ajax({
-					type:"post",
-					url:"https://chatbottest.auth.us-east-2.amazoncognito.com/oauth2/token",
-					contentType: 'application/x-www-form-urlencoded',
-					data:{
-							grant_type : "authorization_code",
-							client_id : "79qedpmlio35ll72il4b0mpmrq",
-							redirect_uri : "https://s3.us-east-2.amazonaws.com/yjctest/index.html",
-							code : window.location.search.substr(6)
-					},
-					success:function(data){
-							id_token = data['id_token'];
+			type:"post",
+			url:"https://chatbottest.auth.us-east-2.amazoncognito.com/oauth2/token",
+			contentType: 'application/x-www-form-urlencoded',
+			data:{
+					grant_type : "authorization_code",
+					client_id : "79qedpmlio35ll72il4b0mpmrq",
+					redirect_uri : "https://s3.us-east-2.amazonaws.com/yjctest/index.html",
+					code : window.location.search.substr(6)
+			},
+			success:function(data){
 
-							AWS.config.region = 'us-east-2';
+					id_token = data['id_token'];
 
-							// Configure the credentials provider to use your identity pool
-							AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-									IdentityPoolId: 'us-east-2:9e4570ae-2aad-4f1e-91af-bf81aff48a31',
-									Logins:{
-											'cognito-idp.us-east-2.amazonaws.com/us-east-2_dK5ghrgC8': id_token
-									}
-							});
-							
-							AWS.config.credentials.get();
-							return false;
-					}
-			}); 
+					AWS.config.region = 'us-east-2';
+
+					// Configure the credentials provider to use your identity pool
+					AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+							IdentityPoolId: 'us-east-2:9e4570ae-2aad-4f1e-91af-bf81aff48a31',
+							Logins:{
+									'cognito-idp.us-east-2.amazonaws.com/us-east-2_dK5ghrgC8': id_token
+							}
+					});
+
+				window.setTimeout(
+					function(){
+					AWS.config.credentials.get(function(err){
+						console.log("Get error");
+						console.log(window.location.search.substr(6));
+						console.log(err);
+					});
+				},2000
+				);
+
+
+					return false;
+			}
+	}); 
 });

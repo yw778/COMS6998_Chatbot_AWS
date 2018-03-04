@@ -7,8 +7,12 @@ Please use `Chrome` browser for the below sign-up/sign-in link.
 We use email verification code in addtion to username/password sign up. You should
 sign-up with your email address and fill in the verification code correctly.
 
+# sign-in username/password
+If you don't want to sign up, use the following username/password:
+`username`: yyyy
+`password`: qqqqqq11
 
-# Sign-up/sign-in link for cognito (first visit this link)
+# Sign-up/link for cognito (first visit this link)
 https://chatbottest.auth.us-east-2.amazoncognito.com/login?response_type=code&client_id=79qedpmlio35ll72il4b0mpmrq&redirect_uri=https://s3.us-east-2.amazonaws.com/yjctest/index.html
 
 
