@@ -1,11 +1,14 @@
 # Overview
 
-This is the homework repository for COMS6998 Cloud Computing and Big Data at Columbia University
+This is the homework repository for COMS6998 Cloud Computing and Big Data at Columbia University.
 
-# important
-please use `Chrome` for the below sign-up/sign-in link
+# Important
+Please use `Chrome` browser for the below sign-up/sign-in link.
+We use email verification code in addtion to username/password sign up. You should
+sign-up with your email address and fill in the verification code correctly.
 
-# sign-up/sign-in link for cognito
+
+# Sign-up/sign-in link for cognito (first visit this link)
 https://chatbottest.auth.us-east-2.amazoncognito.com/login?response_type=code&client_id=79qedpmlio35ll72il4b0mpmrq&redirect_uri=https://s3.us-east-2.amazonaws.com/yjctest/index.html
 
 
