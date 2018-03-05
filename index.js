@@ -100,6 +100,8 @@ $(window).on('keydown', function(e) {
 
 $(document).ready(function(){
 	let id_token;
+	var urlParams = new URLSearchParams(window.location.search);
+	var code = urlParams.get("code")
 	$.ajax({
 			type:"post",
 			url:"https://chatbottest.auth.us-east-2.amazoncognito.com/oauth2/token",
@@ -108,7 +110,7 @@ $(document).ready(function(){
 					grant_type : "authorization_code",
 					client_id : "79qedpmlio35ll72il4b0mpmrq",
 					redirect_uri : "https://s3.us-east-2.amazonaws.com/yjctest/index.html",
-					code : window.location.search.substr(6)
+					code : code
 			},
 			success:function(data){
 
