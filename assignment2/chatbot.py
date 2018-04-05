@@ -1,13 +1,3 @@
-"""
-This sample demonstrates an implementation of the Lex Code Hook Interface
-in order to serve a sample bot which manages reservations for hotel rooms and car rentals.
-Bot, Intent, and Slot models which are compatible with this sample can be found in the Lex Console
-as part of the 'BookTrip' template.
-
-For instructions on how to set up and test this bot, as well as additional samples,
-visit the Lex Getting Started documentation http://docs.aws.amazon.com/lex/latest/dg/getting-started.html.
-"""
-
 import json
 import datetime
 import time
@@ -86,7 +76,6 @@ def safe_int(n):
         return int(n)
     return n
 
-
 def try_ex(func):
     """
     Call passed in function in try block. If KeyError is encountered return None.
@@ -155,6 +144,8 @@ def validate_dining(slots):
     if dining_date is not None:
         if not isvalid_date(dining_date):
             return build_validation_result(False, 'DiningDate', 'Sorry. We don\'t recognize the date you entered. Can you enter again?')
+        elif datetime.datetime.strptime(dining_date, '%Y-%m-%d').date() <= datetime.date.today():
+            return build_validation_result(False, 'DiningDate', 'You can reserve from tomorrow onwards. What day would you like to reserve?')
 
     if dining_time is not None:
         if len(dining_time) != 5:
@@ -223,7 +214,7 @@ def diningsuggestions_intent(intent_request):
         return delegate(session_attributes, intent_request['currentIntent']['slots'])
 
     # Booking the hotel.  In a real application, this would likely involve a call to a backend service.
-    logger.debug('bookHotel under={}'.format(reservation))
+    # logger.debug('bookHotel under={}'.format(reservation))
 
     # try_ex(lambda: session_attributes.pop('currentReservationPrice'))
     # try_ex(lambda: session_attributes.pop('currentReservation'))
