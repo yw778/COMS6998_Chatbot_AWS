@@ -45,5 +45,4 @@ exports.handler = (event, context, callback) => {
         /* SOMETHING WENT WRONG */
         callback(error); // this is the Lambda callback
       });
-};: "value1"
-}
+};
