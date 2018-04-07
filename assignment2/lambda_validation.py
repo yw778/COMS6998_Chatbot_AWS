@@ -159,7 +159,6 @@ def validate_dining(slots):
 
     if dining_time is not None:
         if len(dining_time) != 5:
-            # Not a valid time; use a prompt defined on the build-time model.
             return build_validation_result(False, 'DiningTime','Sorry. We don\'t recognize the time you entered. Can you enter again?')
 
     if phone_number is not None:
