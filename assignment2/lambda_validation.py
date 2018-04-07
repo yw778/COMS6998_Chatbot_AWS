@@ -10,7 +10,17 @@ logger.setLevel(logging.DEBUG)
 
 
 # --- Helpers that build all of the responses ---
-
+def elicit_intent(session_attributes, message):
+    return {
+        'sessionAttributes': session_attributes,
+        'dialogAction': {
+            'type': 'ElicitIntent',
+            'message': {
+                'contentType': 'PlainText',
+                'content': message
+            }
+        }
+    }
 
 def elicit_slot(session_attributes, intent_name, slots, slot_to_elicit, message):
     return {
@@ -113,7 +123,7 @@ def isvalid_date(date):
         return False
 
 def isvalid_cuisine(cuisine_type):
-    valid_cuisines = ['chinese', 'japanese', 'mexican', 'american', 'italian']
+    valid_cuisines = ['chinese', 'japanese', 'afghani', 'african', 'argentine']
     return cuisine_type.lower() in valid_cuisines
 
 def validate_dining(slots):
@@ -186,48 +196,24 @@ def diningsuggestions_intent(intent_request):
 
     session_attributes['currentReservation'] = reservation
 
-    if intent_request['invocationSource'] == 'DialogCodeHook':
-        # Validate any slots which have been specified.  If any are invalid, re-elicit for their value
-        validation_result = validate_dining(intent_request['currentIntent']['slots'])
-        if not validation_result['isValid']:
-            slots = intent_request['currentIntent']['slots']
-            slots[validation_result['violatedSlot']] = None
+    # Validate any slots which have been specified.  If any are invalid, re-elicit for their value
+    validation_result = validate_dining(intent_request['currentIntent']['slots'])
+    if not validation_result['isValid']:
+        slots = intent_request['currentIntent']['slots']
+        slots[validation_result['violatedSlot']] = None
 
-            return elicit_slot(
-                session_attributes,
-                intent_request['currentIntent']['name'],
-                slots,
-                validation_result['violatedSlot'],
-                validation_result['message']
-            )
+        return elicit_slot(
+            session_attributes,
+            intent_request['currentIntent']['name'],
+            slots,
+            validation_result['violatedSlot'],
+            validation_result['message']
+        )
 
-        # Otherwise, let native DM rules determine how to elicit for slots and prompt for confirmation.  Pass price
-        # back in sessionAttributes once it can be calculated; otherwise clear any setting from sessionAttributes.
-        # if location and checkin_date and nights and room_type:
-        #     # The price of the hotel has yet to be confirmed.
-        #     price = generate_hotel_price(location, nights, room_type)
-        #     session_attributes['currentReservationPrice'] = price
-        # else:
-        #     try_ex(lambda: session_attributes.pop('currentReservationPrice'))
-        #
-        # session_attributes['currentReservation'] = reservation
-        return delegate(session_attributes, intent_request['currentIntent']['slots'])
 
-    # Booking the hotel.  In a real application, this would likely involve a call to a backend service.
-    # logger.debug('bookHotel under={}'.format(reservation))
+    return delegate(session_attributes, intent_request['currentIntent']['slots'])
 
-    # try_ex(lambda: session_attributes.pop('currentReservationPrice'))
-    # try_ex(lambda: session_attributes.pop('currentReservation'))
-    session_attributes['lastConfirmedReservation'] = reservation
 
-    return close(
-        session_attributes,
-        'Fulfilled',
-        {
-            'contentType': 'PlainText',
-            'content': 'You\'re all set. Expect my recommendations shortly! Have a good day.'
-        }
-    )
 
 
 # --- ThankYou Intent ---
@@ -241,18 +227,11 @@ def thankyou_intent(intent_request):
             'content': 'You\'re welcome.'
         }
     )
-
 # --- greetIntents ---
 def greet_intent(intent_request):
     session_attributes = intent_request['sessionAttributes'] if intent_request['sessionAttributes'] is not None else {}
-    return close(
-        session_attributes,
-        'Fulfilled',
-        {
-            'contentType': 'PlainText',
-            'content': 'Hi there, how can I help?'
-        }
-    )
+    return elicit_intent(session_attributes, 'Hi there, how can I help?')
+
 # --- Intents ---
 def dispatch(intent_request):
     """
@@ -262,12 +241,6 @@ def dispatch(intent_request):
     logger.debug('dispatch userId={}, intentName={}'.format(intent_request['userId'], intent_request['currentIntent']['name']))
 
     intent_name = intent_request['currentIntent']['name']
-
-    # Dispatch to your bot's intent handlers
-    # if intent_name == 'BookHotel':
-    #     return book_hotel(intent_request)
-    # elif intent_name == 'BookCar':
-    #     return book_car(intent_request)
 
     if intent_name == "GreetingIntent":
         return greet_intent(intent_request)
