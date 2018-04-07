@@ -154,10 +154,13 @@ def validate_dining(slots):
     if dining_date is not None:
         if not isvalid_date(dining_date):
             return build_validation_result(False, 'DiningDate', 'Sorry. We don\'t recognize the date you entered. Can you enter again?')
-        elif datetime.datetime.strptime(dining_date, '%Y-%m-%d').date() <= datetime.date.today():
-            return build_validation_result(False, 'DiningDate', 'You can reserve from tomorrow onwards. What day would you like to reserve?')
+        elif datetime.datetime.strptime(dining_date, '%Y-%m-%d').date() < datetime.date.today():
+            return build_validation_result(False, 'DiningDate', 'You can reserve from today onwards. What day would you like to reserve?')
 
     if dining_time is not None:
+        if datetime.datetime.strptime(dining_date, '%Y-%m-%d').date() == datetime.date.today():
+            if datetime.datetime.strptime(dining_date + " " + dining_time, '%Y-%m-%d %H:%M') < (datetime.datetime.now()+ datetime.timedelta(hours=1)):
+                return build_validation_result(False, 'DiningTime','Sorry. If you book today\'s resturant, you can only book 1 hours after current time. Can you enter again?')
         if len(dining_time) != 5:
             return build_validation_result(False, 'DiningTime','Sorry. We don\'t recognize the time you entered. Can you enter again?')
 
