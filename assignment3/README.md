@@ -73,7 +73,7 @@ User gets the following email:
 - `lambda_validation.py`: initialization and validation for Lex.
 - `lambda_fullfill.py`: push Lex result to SQS during fulfillment step.
 - `lambda_2.js`:  1. Query ElasticSearch to get the IDs of the top 5 recommended restaurants based on
-cuisine. 2. POST your Query to the Search API Use the collected restaurant IDs to query for the corresponding restaurants in DynamoDB. 2. pulling message from SQS every minute and recommending restaurants
+cuisine. 2. POST your Query to the Search API Use the collected restaurant IDs to query for the corresponding restaurants in DynamoDB. 3. pulling message from SQS every minute and recommending restaurants
 
 # Data Files
 - data/File{1,2,3}.csv: data file for assignment
